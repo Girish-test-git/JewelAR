@@ -1,20 +1,21 @@
 import type { Vector3 } from "../math/Vector";
-import TrackingStore from "../store/TrackingStore";
+import { useTrackingStore } from "../store/useTrackingStore";
 
 export default class LandmarkMapper {
 
     map(landmarks: Vector3[]): void {
 
+        const store = useTrackingStore.getState();
+
         if (!landmarks || landmarks.length < 478) {
 
-            TrackingStore.setFaceDetected(false);
+            store.setFaceDetected(false);
             return;
 
         }
 
-        TrackingStore.setFaceDetected(true);
+        store.setFaceDetected(true);
 
-        // MediaPipe Face Mesh landmark indices
         const FOREHEAD = 10;
         const NOSE = 1;
         const CHIN = 152;
@@ -27,8 +28,7 @@ export default class LandmarkMapper {
         const leftEar = landmarks[LEFT_EAR];
         const rightEar = landmarks[RIGHT_EAR];
 
-        // Temporary neck estimation
-        const neck: Vector3 = {
+        const neck = {
 
             x: chin.x,
             y: chin.y + 0.12,
@@ -36,12 +36,12 @@ export default class LandmarkMapper {
 
         };
 
-        TrackingStore.setAnchor("forehead", forehead);
-        TrackingStore.setAnchor("nose", nose);
-        TrackingStore.setAnchor("chin", chin);
-        TrackingStore.setAnchor("leftEar", leftEar);
-        TrackingStore.setAnchor("rightEar", rightEar);
-        TrackingStore.setAnchor("neck", neck);
+        store.setAnchor("forehead", forehead);
+        store.setAnchor("nose", nose);
+        store.setAnchor("chin", chin);
+        store.setAnchor("leftEar", leftEar);
+        store.setAnchor("rightEar", rightEar);
+        store.setAnchor("neck", neck);
 
     }
 

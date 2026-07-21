@@ -9,7 +9,7 @@ import FaceTracker from "../tracking/trackers/FaceTracker";
 import LandmarkMapper from "../tracking/LandmarkMapper";
 import HeadPoseCalculator from "../tracking/HeadPoseCalculator";
 
-import TrackingStore from "../store/TrackingStore";
+import { useTrackingStore } from "../store/useTrackingStore";
 
 import { FaceState } from "../types/FaceState";
 
@@ -53,7 +53,7 @@ export default function TryOnPage() {
 
                 const pose = HeadPoseCalculator.calculate(landmarks);
 
-                TrackingStore.setHeadRotation(pose);
+                useTrackingStore.getState().setHeadPose(pose);
 
             }
 
