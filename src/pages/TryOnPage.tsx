@@ -1,22 +1,21 @@
 import { useCallback, useRef } from "react";
 import Camera from "../components/Camera";
+import Scene from "../rendering/Scene";
 import FaceTrackingService from "../services/FaceTrackingService";
 import FaceTracker from "../tracking/trackers/FaceTracker";
 import { FaceState } from "../types/FaceState";
 
 export default function TryOnPage() {
 
-    const animationFrameId = useRef<number | null>(null);
-
     const tracker = useRef(new FaceTracker());
 
-    const lastState = useRef<FaceState>(FaceState.SEARCHING);
+    const lastState = useRef(FaceState.SEARCHING);
+
+    const animationId = useRef<number>();
 
     const processVideo = useCallback(async (video: HTMLVideoElement) => {
 
         await FaceTrackingService.initialize();
-
-        console.log("✅ AI Initialized");
 
         const detect = () => {
 
@@ -32,20 +31,11 @@ export default function TryOnPage() {
 
                 lastState.current = state;
 
-                console.log("Tracking State:", state);
-
-                if (state === FaceState.TRACKING && result) {
-
-                    console.log(
-                        "Landmarks:",
-                        result.faceLandmarks[0].length
-                    );
-
-                }
+                console.log("Tracking:", state);
 
             }
 
-            animationFrameId.current = requestAnimationFrame(detect);
+            animationId.current = requestAnimationFrame(detect);
 
         };
 
@@ -55,11 +45,19 @@ export default function TryOnPage() {
 
     return (
 
-        <div>
+        <div
+            style={{
+                width: 700,
+                margin: "0 auto",
+                position: "relative"
+            }}
+        >
 
             <h1>JewelAR</h1>
 
             <Camera onVideoReady={processVideo} />
+
+            <Scene />
 
         </div>
 
