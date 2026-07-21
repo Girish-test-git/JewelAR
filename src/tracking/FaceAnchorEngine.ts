@@ -1,5 +1,5 @@
 import TrackingStore from "../store/TrackingStore";
-import { Vector3 } from "../math/Vector";
+import type { Vector3 } from "../math/Vector";
 
 export default class FaceAnchorEngine {
 
