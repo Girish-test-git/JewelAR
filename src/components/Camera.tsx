@@ -2,7 +2,11 @@ import { useEffect, useRef } from "react";
 import CameraService from "../services/CameraService";
 import OverlayCanvas from "./OverlayCanvas";
 
-function Camera() {
+interface CameraProps {
+    onVideoReady?: (video: HTMLVideoElement) => void;
+}
+
+function Camera({ onVideoReady }: CameraProps) {
 
     const videoRef = useRef<HTMLVideoElement>(null);
 
@@ -15,10 +19,23 @@ function Camera() {
                 const stream = await CameraService.startCamera();
 
                 if (videoRef.current) {
+
                     videoRef.current.srcObject = stream;
+
+                    videoRef.current.onloadedmetadata = () => {
+
+                        videoRef.current?.play();
+
+                        if (videoRef.current && onVideoReady) {
+                            onVideoReady(videoRef.current);
+                        }
+
+                    };
+
                 }
 
-            } catch (err) {
+            }
+            catch (err) {
 
                 console.error(err);
 
@@ -28,7 +45,7 @@ function Camera() {
 
         startCamera();
 
-    }, []);
+    }, [onVideoReady]);
 
     return (
 
