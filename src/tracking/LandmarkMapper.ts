@@ -1,40 +1,47 @@
-import { FaceLandmarkIndices } from "../constants/FaceLandmarkIndices";
-
-export interface AnchorPoints {
-
-    nose: any;
-
-    chin: any;
-
-    leftEar: any;
-
-    rightEar: any;
-
-    leftEye: any;
-
-    rightEye: any;
-
-}
+import type { Vector3 } from "../math/Vector";
+import TrackingStore from "../store/TrackingStore";
 
 export default class LandmarkMapper {
 
-    static map(landmarks: any[]): AnchorPoints {
+    map(landmarks: Vector3[]): void {
 
-        return {
+        if (!landmarks || landmarks.length < 478) {
 
-            nose: landmarks[FaceLandmarkIndices.NOSE_TIP],
+            TrackingStore.setFaceDetected(false);
+            return;
 
-            chin: landmarks[FaceLandmarkIndices.CHIN],
+        }
 
-            leftEar: landmarks[FaceLandmarkIndices.LEFT_EAR],
+        TrackingStore.setFaceDetected(true);
 
-            rightEar: landmarks[FaceLandmarkIndices.RIGHT_EAR],
+        // MediaPipe Face Mesh landmark indices
+        const FOREHEAD = 10;
+        const NOSE = 1;
+        const CHIN = 152;
+        const LEFT_EAR = 234;
+        const RIGHT_EAR = 454;
 
-            leftEye: landmarks[FaceLandmarkIndices.LEFT_EYE],
+        const forehead = landmarks[FOREHEAD];
+        const nose = landmarks[NOSE];
+        const chin = landmarks[CHIN];
+        const leftEar = landmarks[LEFT_EAR];
+        const rightEar = landmarks[RIGHT_EAR];
 
-            rightEye: landmarks[FaceLandmarkIndices.RIGHT_EYE]
+        // Temporary neck estimation
+        const neck: Vector3 = {
+
+            x: chin.x,
+            y: chin.y + 0.12,
+            z: chin.z
 
         };
+
+        TrackingStore.setAnchor("forehead", forehead);
+        TrackingStore.setAnchor("nose", nose);
+        TrackingStore.setAnchor("chin", chin);
+        TrackingStore.setAnchor("leftEar", leftEar);
+        TrackingStore.setAnchor("rightEar", rightEar);
+        TrackingStore.setAnchor("neck", neck);
 
     }
 
