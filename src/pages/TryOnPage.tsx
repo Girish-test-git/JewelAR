@@ -6,7 +6,10 @@ import Scene from "../rendering/Scene";
 import FaceTrackingService from "../services/FaceTrackingService";
 
 import FaceTracker from "../tracking/trackers/FaceTracker";
-import FaceAnchorEngine from "../tracking/FaceAnchorEngine";
+import LandmarkMapper from "../tracking/LandmarkMapper";
+import HeadPoseCalculator from "../tracking/HeadPoseCalculator";
+
+import TrackingStore from "../store/TrackingStore";
 
 import { FaceState } from "../types/FaceState";
 
@@ -14,7 +17,7 @@ export default function TryOnPage() {
 
     const tracker = useRef(new FaceTracker());
 
-    const anchorEngine = useRef(new FaceAnchorEngine());
+    const landmarkMapper = useRef(new LandmarkMapper());
 
     const lastState = useRef(FaceState.SEARCHING);
 
@@ -44,9 +47,13 @@ export default function TryOnPage() {
 
             if (hasFace) {
 
-                anchorEngine.current.update(
-                    result!.faceLandmarks[0]
-                );
+                const landmarks = result!.faceLandmarks[0];
+
+                landmarkMapper.current.map(landmarks);
+
+                const pose = HeadPoseCalculator.calculate(landmarks);
+
+                TrackingStore.setHeadRotation(pose);
 
             }
 
