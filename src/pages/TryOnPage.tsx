@@ -1,13 +1,20 @@
 import { useCallback, useRef } from "react";
+
 import Camera from "../components/Camera";
 import Scene from "../rendering/Scene";
+
 import FaceTrackingService from "../services/FaceTrackingService";
+
 import FaceTracker from "../tracking/trackers/FaceTracker";
+import FaceAnchorEngine from "../tracking/FaceAnchorEngine";
+
 import { FaceState } from "../types/FaceState";
 
 export default function TryOnPage() {
 
     const tracker = useRef(new FaceTracker());
+
+    const anchorEngine = useRef(new FaceAnchorEngine());
 
     const lastState = useRef(FaceState.SEARCHING);
 
@@ -32,6 +39,14 @@ export default function TryOnPage() {
                 lastState.current = state;
 
                 console.log("Tracking:", state);
+
+            }
+
+            if (hasFace) {
+
+                anchorEngine.current.update(
+                    result!.faceLandmarks[0]
+                );
 
             }
 

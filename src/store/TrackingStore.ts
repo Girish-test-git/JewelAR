@@ -1,10 +1,4 @@
-export interface Vector3 {
-
-    x: number;
-    y: number;
-    z: number;
-
-}
+import { Vector3 } from "../math/Vector";
 
 export interface HeadRotation {
 
@@ -53,9 +47,7 @@ class TrackingStore {
     private headRotation: HeadRotation = {
 
         yaw: 0,
-
         pitch: 0,
-
         roll: 0
 
     };
@@ -99,22 +91,6 @@ class TrackingStore {
     getHeadRotation(): HeadRotation {
 
         return this.headRotation;
-
-    }
-
-    reset() {
-
-        this.faceDetected = false;
-
-        this.headRotation = {
-
-            yaw: 0,
-
-            pitch: 0,
-
-            roll: 0
-
-        };
 
     }
 
