@@ -1,9 +1,11 @@
 import type { Vector3 } from "../math/Vector";
 
-export interface HeadRotation {
+export interface HeadPose {
 
     yaw: number;
+
     pitch: number;
+
     roll: number;
 
 }
@@ -12,9 +14,9 @@ export interface FaceAnchors {
 
     forehead: Vector3;
 
-    chin: Vector3;
-
     nose: Vector3;
+
+    chin: Vector3;
 
     neck: Vector3;
 
@@ -32,9 +34,9 @@ class TrackingStore {
 
         forehead: { x: 0, y: 0, z: 0 },
 
-        chin: { x: 0, y: 0, z: 0 },
-
         nose: { x: 0, y: 0, z: 0 },
+
+        chin: { x: 0, y: 0, z: 0 },
 
         neck: { x: 0, y: 0, z: 0 },
 
@@ -44,10 +46,12 @@ class TrackingStore {
 
     };
 
-    private headRotation: HeadRotation = {
+    private headPose: HeadPose = {
 
         yaw: 0,
+
         pitch: 0,
+
         roll: 0
 
     };
@@ -82,15 +86,15 @@ class TrackingStore {
 
     }
 
-    setHeadRotation(rotation: HeadRotation) {
+    setHeadRotation(pose: HeadPose) {
 
-        this.headRotation = rotation;
+        this.headPose = pose;
 
     }
 
-    getHeadRotation(): HeadRotation {
+    getHeadRotation(): HeadPose {
 
-        return this.headRotation;
+        return this.headPose;
 
     }
 
