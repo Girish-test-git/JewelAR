@@ -1,33 +1,23 @@
 import { useEffect } from "react";
-
 import Camera from "../components/Camera";
-import FaceTrackingService from "../services/FaceTrackingService";
+import { FaceTracker } from "../tracking/FaceTracker";
 
-function TryOnPage() {
+export default function TryOnPage() {
+  useEffect(() => {
+    const tracker = new FaceTracker();
 
-    useEffect(() => {
+    tracker.initialize();
 
-        async function initializeAI() {
+    return () => {
+      tracker.dispose();
+    };
+  }, []);
 
-            console.log("Loading MediaPipe...");
+  return (
+    <div>
+      <h1>JewelAR</h1>
 
-            await FaceTrackingService.initialize();
-
-            console.log("MediaPipe Loaded Successfully");
-
-        }
-
-        initializeAI();
-
-    }, []);
-
-    return (
-        <div className="content">
-
-            <Camera />
-
-        </div>
-    );
+      <Camera />
+    </div>
+  );
 }
-
-export default TryOnPage;

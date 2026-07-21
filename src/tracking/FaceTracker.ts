@@ -1,34 +1,42 @@
-export interface FaceTrackingResult {
-  landmarks: number[][];
-  timestamp: number;
-}
+import {
+  FaceLandmarker,
+  FilesetResolver,
+} from "@mediapipe/tasks-vision";
 
 export class FaceTracker {
-  private isInitialized = false;
+  private faceLandmarker: FaceLandmarker | null = null;
 
-  async initialize(): Promise<void> {
-    console.log("Initializing FaceTracker...");
+  async initialize() {
+    console.log("Loading MediaPipe...");
 
-    // MediaPipe model will be loaded here in the next step
+    const vision = await FilesetResolver.forVisionTasks(
+      "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision/wasm"
+    );
 
-    this.isInitialized = true;
+    this.faceLandmarker = await FaceLandmarker.createFromOptions(
+      vision,
+      {
+        baseOptions: {
+          modelAssetPath: "/models/face_landmarker.task",
+        },
+        runningMode: "VIDEO",
+        numFaces: 1,
+      }
+    );
 
-    console.log("FaceTracker initialized successfully.");
+    console.log("MediaPipe Loaded Successfully");
   }
 
-  async detect(video: HTMLVideoElement): Promise<FaceTrackingResult | null> {
-    if (!this.isInitialized) {
-      return null;
-    }
+  detect(video: HTMLVideoElement) {
+    if (!this.faceLandmarker) return null;
 
-    return {
-      landmarks: [],
-      timestamp: performance.now(),
-    };
+    return this.faceLandmarker.detectForVideo(
+      video,
+      performance.now()
+    );
   }
 
-  dispose(): void {
-    console.log("FaceTracker disposed.");
-    this.isInitialized = false;
+  dispose() {
+    this.faceLandmarker?.close();
   }
 }
